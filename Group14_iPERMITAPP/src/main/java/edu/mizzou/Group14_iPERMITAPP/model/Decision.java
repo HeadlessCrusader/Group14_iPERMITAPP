@@ -6,20 +6,20 @@ import java.util.Date;
 
 @Entity
 @Data
-public class Permit {
+public class Decision {
 
     @Id
-    private String permitID;
+    private String id;
 
-    private Date dateOfIssue;
-    private String duration;
+    private Date dateOfDecision;
+    private String finalDecision; // approve / reject
     private String description;
-
-    @OneToOne
-    @JoinColumn(name = "permit_request_id")
-    private PermitRequest permitRequest;
 
     @ManyToOne
     @JoinColumn(name = "eo_id")
     private EO eo;
+
+    @OneToOne
+    @JoinColumn(name = "permit_request_id")
+    private PermitRequest permitRequest;
 }
