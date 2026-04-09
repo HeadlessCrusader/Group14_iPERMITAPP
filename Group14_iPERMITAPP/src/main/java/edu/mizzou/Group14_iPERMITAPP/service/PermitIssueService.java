@@ -1,6 +1,9 @@
 package edu.mizzou.Group14_iPERMITAPP.service;
 
-public class PermitIssueController {
+import org.springframework.stereotype.Service;
+
+@Service
+public class PermitIssueService {
 
     public void printRequest(){
 

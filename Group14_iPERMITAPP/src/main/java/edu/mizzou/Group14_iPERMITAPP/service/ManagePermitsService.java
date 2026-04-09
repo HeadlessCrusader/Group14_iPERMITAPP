@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ManagePermitsController {
+public class ManagePermitsService {
 
     @Autowired
     private EnvironmentalPermitRepository repository;

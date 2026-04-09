@@ -1,6 +1,9 @@
 package edu.mizzou.Group14_iPERMITAPP.service;
 
-public class ReviewSubmittedApplicationsController {
+import org.springframework.stereotype.Service;
+
+@Service
+public class ReviewSubmittedApplicationsService {
 
     public void setCurrentRequest(){
 
