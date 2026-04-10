@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Submit Permit Request</h2>
+
+    <form method="post" action="/re/submit">
+        <label>Activity Description:</label><br>
+        <input name="activityDescription"/><br><br>
+
+        <label>Start Date:</label><br>
+        <input type="date" name="activityStartDate"/><br><br>
+
+        <label>Duration:</label><br>
+        <input name="activityDuration"/><br><br>
+
+        <label>Permit Type:</label><br>
+        <select name="permitId">
+            <option value="AIR">Air Permit</option>
+            <option value="WASTE">Waste Permit</option>
+        </select><br><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <br>
+    <a href="/re/dashboard">Back</a>
+</body>
+</html>
