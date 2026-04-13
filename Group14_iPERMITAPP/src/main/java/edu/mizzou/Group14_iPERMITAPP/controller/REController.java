@@ -1,6 +1,9 @@
 package edu.mizzou.Group14_iPERMITAPP.controller;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -157,8 +160,33 @@ public class REController {
 	}
 
 	@GetMapping("/re/requests")
-	public String myRequests(Model model) {
-		return "re/my-requests";
+	public String myRequests(HttpSession session, Model model) {
+
+	    String email = (String) session.getAttribute("userEmail");
+
+	    if (email == null) {
+	        return "redirect:/login";
+	    }
+
+	    RE user = reRepository.findByEmail(email);
+
+	    if (user == null) {
+	        return "redirect:/login";
+	    }
+
+	    List<PermitRequest> requests = permitRequestRepository.findByRe(user);
+
+	    Map<String, Boolean> paidMap = new HashMap<>();
+
+	    for (PermitRequest r : requests) {
+	        boolean paid = paymentRepository.findByPermitRequest(r) != null;
+	        paidMap.put(r.getRequestNo(), paid);
+	    }
+
+	    model.addAttribute("requests", requests);
+	    model.addAttribute("paidMap", paidMap);
+
+	    return "re/my-requests";
 	}
 
 	@GetMapping("/re/account")
