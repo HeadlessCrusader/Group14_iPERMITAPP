@@ -22,6 +22,7 @@ import edu.mizzou.Group14_iPERMITAPP.repository.EnvironmentalPermitRepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.PaymentRepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.PermitRequestRepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.RERepository;
+import edu.mizzou.Group14_iPERMITAPP.service.AcknowledgeEOService;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -37,6 +38,9 @@ public class REController {
 	
 	@Autowired
 	private PaymentRepository paymentRepository;
+	
+    @Autowired
+    private AcknowledgeEOService acknowledgeEOService;
 
 	private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");
 
@@ -99,6 +103,8 @@ public class REController {
 	        payment.setPermitRequest(request);
 
 	        paymentRepository.save(payment);
+	        
+	        acknowledgeEOService.acceptPayment(request); 
 
 	        return "redirect:/re/dashboard?paid=true";
 

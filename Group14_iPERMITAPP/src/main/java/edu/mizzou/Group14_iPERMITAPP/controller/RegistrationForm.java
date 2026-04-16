@@ -1,4 +1,5 @@
 package edu.mizzou.Group14_iPERMITAPP.controller;
+import edu.mizzou.Group14_iPERMITAPP.model.PermitRequest;
 import edu.mizzou.Group14_iPERMITAPP.service.AcknowledgeEOService;
 import jakarta.servlet.http.HttpSession;
 
@@ -39,7 +40,8 @@ public class RegistrationForm { // aka ministry's website
         }
 
         // Get only PAID permits from your service
-        model.addAttribute("permits", acknowledgeEOService.getValidPermitRequests());
+        List<PermitRequest> permits = acknowledgeEOService.getValidPermitRequests();
+        model.addAttribute("permits", permits);
 
         return "eo/permits";
     }
