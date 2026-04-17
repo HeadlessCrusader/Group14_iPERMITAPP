@@ -2,9 +2,11 @@ package edu.mizzou.Group14_iPERMITAPP.controller;
 import edu.mizzou.Group14_iPERMITAPP.model.EO;
 import edu.mizzou.Group14_iPERMITAPP.model.EnvironmentalPermit;
 import edu.mizzou.Group14_iPERMITAPP.model.PermitRequest;
+import edu.mizzou.Group14_iPERMITAPP.model.RequestStatus;
 import edu.mizzou.Group14_iPERMITAPP.repository.EORepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.EnvironmentalPermitRepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.PermitRequestRepository;
+import edu.mizzou.Group14_iPERMITAPP.repository.RequestStatusRepository;
 import edu.mizzou.Group14_iPERMITAPP.service.AcknowledgeEOService;
 import jakarta.servlet.http.HttpSession;
 
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.ui.Model;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +27,12 @@ public class RegistrationForm { // aka ministry's website
     
     @Autowired
     private EnvironmentalPermitRepository permitRepository;
+    
+    @Autowired
+    private RequestStatusRepository requestStatusRepository;
+
+    @Autowired
+    private PermitRequestRepository permitRequestRepository;
     
     @Autowired
     private EORepository eoRepository;
@@ -118,6 +127,26 @@ public class RegistrationForm { // aka ministry's website
 
         return "redirect:/eo/dashboard";
     }  
+    
+    @GetMapping("/eo/reports")
+    public String viewAllReports(HttpSession session, Model model) {
+        String userType = (String) session.getAttribute("userType");
+        if (userType == null || !userType.equals("EO")) return "redirect:/login";
+
+        List<PermitRequest> allRequests = permitRequestRepository.findAll();
+        
+        // Create a status map for all requests
+        Map<String, String> statusMap = new HashMap<>();
+        List<RequestStatus> allStatuses = requestStatusRepository.findAll();
+        for (RequestStatus rs : allStatuses) {
+            statusMap.put(rs.getPermitRequest().getRequestNo(), rs.getPermitRequestStatus());
+        }
+
+        model.addAttribute("requests", allRequests);
+        model.addAttribute("statusMap", statusMap);
+        
+        return "eo/reports";
+    }
 
     public void login(String uname, String passw){
 
