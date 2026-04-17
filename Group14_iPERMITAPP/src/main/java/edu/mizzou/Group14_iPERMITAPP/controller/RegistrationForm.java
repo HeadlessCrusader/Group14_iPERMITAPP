@@ -1,5 +1,7 @@
 package edu.mizzou.Group14_iPERMITAPP.controller;
+import edu.mizzou.Group14_iPERMITAPP.model.EnvironmentalPermit;
 import edu.mizzou.Group14_iPERMITAPP.model.PermitRequest;
+import edu.mizzou.Group14_iPERMITAPP.repository.EnvironmentalPermitRepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.PermitRequestRepository;
 import edu.mizzou.Group14_iPERMITAPP.service.AcknowledgeEOService;
 import jakarta.servlet.http.HttpSession;
@@ -16,6 +18,9 @@ public class RegistrationForm { // aka ministry's website
 
     @Autowired
     private AcknowledgeEOService acknowledgeEOService;
+    
+    @Autowired
+    private EnvironmentalPermitRepository permitRepository;
 
     @GetMapping("/eo/dashboard")
     public String eoDashboard(HttpSession session) {
@@ -45,6 +50,35 @@ public class RegistrationForm { // aka ministry's website
         model.addAttribute("permits", permits);
 
         return "eo/permits";
+    }
+    
+    @GetMapping("/eo/permits/create")
+    public String createPermitPage(HttpSession session) {
+        String userType = (String) session.getAttribute("userType");
+        if (userType == null || !userType.equals("EO")) return "redirect:/login";
+        return "eo/create-permit";
+    }
+
+    @PostMapping("/eo/permits/create")
+    public String savePermit(
+            @RequestParam String permitID,
+            @RequestParam String permitName,
+            @RequestParam Double permitFee,
+            @RequestParam String description,
+            HttpSession session) {
+                
+        String userType = (String) session.getAttribute("userType");
+        if (userType == null || !userType.equals("EO")) return "redirect:/login";
+
+        EnvironmentalPermit newPermit = new EnvironmentalPermit();
+        newPermit.setPermitID(permitID);
+        newPermit.setPermitName(permitName);
+        newPermit.setPermitFee(permitFee);
+        newPermit.setDescription(description);
+
+        permitRepository.save(newPermit);
+
+        return "redirect:/eo/dashboard";
     }
 
     public void login(String uname, String passw){
