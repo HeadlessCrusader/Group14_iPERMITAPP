@@ -58,28 +58,32 @@ public class ReviewSubmittedApplicationsForm {
     public String decidePermit(
             @PathVariable String requestNo,
             @RequestParam String decision,
-            @RequestParam String reason,
+            @RequestParam(required = false, defaultValue = "") String reason,
             HttpSession session
-    ) {
-
+    ) {        
         String userType = (String) session.getAttribute("userType");
         if (userType == null || !userType.equals("EO")) {
             return "redirect:/login";
         }
 
-        String eoId = (String) session.getAttribute("eo-Id");
-        EO eo = eoRepository.findById(eoId).orElse(null);
+        String eoId = (String) session.getAttribute("eo-id");
+
+        EO eo = (eoId != null) ? eoRepository.findById(eoId).orElse(null) : null;
         PermitRequest permit = permitRequestRepository.findById(requestNo).orElse(null);
 
         if (eo == null || permit == null) {
             return "redirect:/eo/permits?error=missing_data";
         }
         
-        if (decision.equals("APPROVE")) {
-            reviewSubmittedApplicationsService.approveRequest(permit, eo, reason);
-        }
-        else if (decision.equals("REJECT")) {
-            reviewSubmittedApplicationsService.rejectRequest(permit, eo, reason);
+        try {
+            if (decision.equals("APPROVE")) {
+                reviewSubmittedApplicationsService.approveRequest(permit, eo, reason);
+            } else if (decision.equals("REJECT")) {
+                reviewSubmittedApplicationsService.rejectRequest(permit, eo, reason);
+            }
+        } catch (Exception e) {
+            e.printStackTrace(); 
+            return "redirect:/eo/permits?error=service_failed";
         }
 
         return "redirect:/eo/permits";
