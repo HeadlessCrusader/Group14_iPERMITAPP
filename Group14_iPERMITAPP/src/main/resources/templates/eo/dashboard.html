@@ -35,7 +35,7 @@
 
         .topbar {
             display: flex;
-            justify-content: flex-end; /* Logout only, so aligned right */
+            justify-content: space-between; /* This forces the spacing */
             margin-bottom: 15px;
         }
 
@@ -43,6 +43,12 @@
             color: red;
             text-decoration: none;
             font-size: 14px;
+        }
+
+        .account {
+            font-size: 14px;
+            color: blue;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -52,6 +58,7 @@
 <div class="container">
 
     <div class="topbar">
+        <a class="account" href="/eo/account">My Account</a>
         <a class="logout" href="/logout">Logout</a>
     </div>
 

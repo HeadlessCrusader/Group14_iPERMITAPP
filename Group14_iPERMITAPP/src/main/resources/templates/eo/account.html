@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Account Settings</title>
+    <style>
+        body { font-family: Arial; background-color: #f5f5f5; }
+        .container { 
+            width: 400px; margin: 100px auto; padding: 25px; 
+            background: white; border-radius: 8px; border: 1px solid #ddd;
+        }
+        input { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; }
+        button { 
+            width: 100%; padding: 12px; margin-top: 10px; 
+            background-color: #2d6cdf; color: white; border: none; border-radius: 6px; cursor: pointer;
+        }
+        .top-bar { display: flex; justify-content: space-between; margin-bottom: 20px; }
+        a { text-decoration: none; color: blue; font-size: 14px; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="top-bar">
+        <a href="/eo/dashboard">← Dashboard</a>
+    </div>
+
+    <h2>Change Password</h2>
+
+    <p th:if="${param.error}" style="color:red;">Incorrect current password.</p>
+    <p th:if="${param.success}" style="color:green;">Password updated!</p>
+
+    <form method="post" action="/eo/account/update-password">
+        <input name="currentPassword" type="password" placeholder="Current Password" required />
+        <input name="newPassword" type="password" placeholder="New Password" required />
+        <button type="submit">Update Password</button>
+    </form>
+</div>
+</body>
+</html>
