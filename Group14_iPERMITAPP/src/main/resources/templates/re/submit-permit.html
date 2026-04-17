@@ -77,9 +77,10 @@
 
 	        <label>Permit Type</label>
 	        <select name="permitId" required>
-	            <option value="">-- Select Permit --</option>
-	            <option value="AIR">Air Permit</option>
-	            <option value="WASTE">Waste Permit</option>
+				<option th:each="permit : ${permits}" 
+				        th:value="${permit.permitID}" 
+				        th:text="${permit.permitName}">
+				</option>
 	        </select>
 
 	        <button type="submit">Submit Request</button>

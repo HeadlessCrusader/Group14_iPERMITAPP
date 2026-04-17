@@ -61,7 +61,13 @@ public class REController {
 
 	@GetMapping("/re/submit")
 	public String submitPermitPage(Model model) {
-		return "re/submit-permit";
+	    // Fetch all permits from the database
+	    List<EnvironmentalPermit> permits = environmentalPermitRepository.findAll();
+	    
+	    // Add them to the model
+	    model.addAttribute("permits", permits);
+	    
+	    return "re/submit-permit";
 	}
 
 	@GetMapping("/re/pay")
