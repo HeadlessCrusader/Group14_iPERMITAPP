@@ -1,7 +1,9 @@
 package edu.mizzou.Group14_iPERMITAPP.service;
 
+import edu.mizzou.Group14_iPERMITAPP.model.EO;
 import edu.mizzou.Group14_iPERMITAPP.model.RE;
 import edu.mizzou.Group14_iPERMITAPP.model.RESite;
+import edu.mizzou.Group14_iPERMITAPP.repository.EORepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.RERepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,13 +19,24 @@ public class RegisterService {
 	@Autowired
 	private RERepository reRepository;
 
+	@Autowired
+	private EORepository eoRepository;
+
 	public boolean login(String email, String password) {
-		RE user = reRepository.findByEmail(email);
-
-		if (user == null)
-			return false;
-
-		return user.getPassword().equals(password);
+	    RE re = reRepository.findByEmail(email);
+	    EO eo = eoRepository.findByEmail(email); 
+	    
+	    System.out.println("Debug: Search email: " + email);
+	    System.out.println("Debug: Found RE: " + (re != null ? re.getEmail() : "null"));
+	    System.out.println("Debug: Found EO: " + (eo != null ? eo.getEmail() : "null"));
+	    
+	    if (re != null) {
+	        return re.getPassword().equals(password);
+	    } else if (eo != null) {
+	        return eo.getPassword().equals(password);
+	    }
+	    
+	    return false;
 	}
 
 	private static final Pattern EMAIL_PATTERN = Pattern.compile("^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$");

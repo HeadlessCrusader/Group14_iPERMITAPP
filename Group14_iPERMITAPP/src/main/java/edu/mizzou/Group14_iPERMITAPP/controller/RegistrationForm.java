@@ -1,6 +1,8 @@
 package edu.mizzou.Group14_iPERMITAPP.controller;
+import edu.mizzou.Group14_iPERMITAPP.model.EO;
 import edu.mizzou.Group14_iPERMITAPP.model.EnvironmentalPermit;
 import edu.mizzou.Group14_iPERMITAPP.model.PermitRequest;
+import edu.mizzou.Group14_iPERMITAPP.repository.EORepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.EnvironmentalPermitRepository;
 import edu.mizzou.Group14_iPERMITAPP.repository.PermitRequestRepository;
 import edu.mizzou.Group14_iPERMITAPP.service.AcknowledgeEOService;
@@ -22,6 +24,9 @@ public class RegistrationForm { // aka ministry's website
     
     @Autowired
     private EnvironmentalPermitRepository permitRepository;
+    
+    @Autowired
+    private EORepository eoRepository;
 
     @GetMapping("/eo/dashboard")
     public String eoDashboard(HttpSession session) {
@@ -33,13 +38,12 @@ public class RegistrationForm { // aka ministry's website
             return "redirect:/login";
         }
 
-        return "eo/dashboard"; // this is your HTML file name (without .html)
+        return "eo/dashboard";
     }
 
     @GetMapping("/eo/permits")
     public String viewPermits(HttpSession session, Model model) {
 
-        // Optional: ensure only EO can access this page
         String userType = (String) session.getAttribute("userType");
 
         if (userType == null || !userType.equals("EO")) {
@@ -53,6 +57,37 @@ public class RegistrationForm { // aka ministry's website
         model.addAttribute("permits", permits);
         model.addAttribute("statusMap", statusMap);
         return "eo/permits";
+    }
+
+    @GetMapping("/eo/account")
+    public String accountPage(HttpSession session, Model model) {
+        String userType = (String) session.getAttribute("userType");
+        if (userType == null || !userType.equals("EO")) return "redirect:/login";
+
+        String eoId = (String) session.getAttribute("eo-id");
+        EO eo = eoRepository.findById(eoId).orElse(null);
+        model.addAttribute("eo", eo);
+
+        return "eo/account";
+    }
+
+    @PostMapping("/eo/account/update-password")
+    public String updatePassword(
+            @RequestParam String currentPassword,
+            @RequestParam String newPassword,
+            HttpSession session) {
+        
+        String eoId = (String) session.getAttribute("eo-id");
+        EO eo = eoRepository.findById(eoId).orElse(null);
+
+        if (eo == null || !eo.getPassword().equals(currentPassword)) {
+            return "redirect:/eo/account?error=password";
+        }
+
+        eo.setPassword(newPassword);
+        eoRepository.save(eo);
+
+        return "redirect:/eo/account?success=true";
     }
     
     @GetMapping("/eo/permits/create")
@@ -82,7 +117,7 @@ public class RegistrationForm { // aka ministry's website
         permitRepository.save(newPermit);
 
         return "redirect:/eo/dashboard";
-    }
+    }  
 
     public void login(String uname, String passw){
 
